@@ -1,0 +1,22 @@
+[
+  {
+    "method": "GET",
+    "regex": "^/?$",
+    "controller": "board.controller.BoardController.root"
+  },
+  {
+    "method": "GET",
+    "regex": "^/echo/?$",
+    "controller": "board.controller.BoardController.echo"
+  },
+  {
+    "method": "GET",
+    "regex": "^/postPage/?$",
+    "controller": "board.controller.BoardController.postPage"
+  },
+  {
+    "method": "GET",
+    "regex": "^/.+$",
+    "controller": "board.controller.BoardController.asset"
+  }
+]
