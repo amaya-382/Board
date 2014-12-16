@@ -1,7 +1,5 @@
 package board.controller
 
-import java.io.File
-
 import simplehttpserver.impl._
 import simplehttpserver.util.Util._
 import simplehttpserver.util.Implicit._
@@ -12,36 +10,33 @@ object BoardController {
   private val builder = new HtmlBuilder()
   private val base = getStringFromResources("base.html")
   private val buildWithBase = builder.buildHtml(base.get) _
+  private val postBase = getStringFromResources("postBase.html")
+  private val buildWithPostBase = builder.buildHtml(postBase.get) _
 
-  def root: Action = req => {
+  def board: Action = req => {
     val contentType = "Content-Type" -> html.contentType
+    val title = "掲示板"
+    val head =
+      """
+        |<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        |<link href="./css/style.css" rel="stylesheet" type="text/css">
+      """.stripMargin
 
-    val title = "Welcome!!"
-    val body = "<h1>Welcome to Simple Http Server!</h1>"
+
+
+
+
+    val bodyBase = """"""
+    val body = bodyBase
 
     HttpResponse(req)(
       Ok,
       header = Map(contentType),
       body = buildWithBase(Seq(
         "<<title>>" -> title,
-        "<<head>>" -> "",
-        "<<body>>" -> body
-      )))
-  }
-
-  def echo: Action = req => {
-    val contentType = "Content-Type" -> html.contentType
-
-    val title = "echo system"
-    val body = s"<p>${req.req}</p><p>${req.header.mkString("<br>")}</p>"
-
-    HttpResponse(req)(
-      Ok,
-      header = Map(contentType),
-      body = buildWithBase(Seq(
-        "<<title>>" -> title,
-        "<<head>>" -> "",
-        "<<body>>" -> body)))
+        "<<head>>" -> head,
+        "<<body>>" -> body))
+    )
   }
 
   def postPage: Action = req => {
@@ -67,25 +62,5 @@ object BoardController {
         "<<title>>" -> title,
         "<<head>>" -> head,
         "<<body>>" -> body)))
-  }
-
-  def asset: Action = req => {
-    findAsset("./public" + req.req._2) match {
-      case Some(file) =>
-        println("asset found!")
-        val cont = getByteArrayFromFile(file)
-
-        HttpResponse(req)(Ok, body = cont)
-      case None =>
-        emitResponseFromFile(req)(NotFound, "404.html")
-    }
-  }
-
-  private def findAsset(path: String): Option[File] = {
-    val file = new File(path)
-    if (file.exists && file.isFile)
-      Some(file)
-    else
-      None
   }
 }

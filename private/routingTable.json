@@ -2,12 +2,17 @@
   {
     "method": "GET",
     "regex": "^/?$",
-    "controller": "board.controller.BoardController.root"
+    "controller": "board.controller.CommonController.root"
   },
   {
     "method": "GET",
     "regex": "^/echo/?$",
-    "controller": "board.controller.BoardController.echo"
+    "controller": "board.controller.CommonController.echo"
+  },
+  {
+    "method": "GET",
+    "regex": "^/board/?$",
+    "controller": "board.controller.BoardController.board"
   },
   {
     "method": "GET",
@@ -17,6 +22,6 @@
   {
     "method": "GET",
     "regex": "^/.+$",
-    "controller": "board.controller.BoardController.asset"
+    "controller": "board.controller.CommonController.asset"
   }
 ]
