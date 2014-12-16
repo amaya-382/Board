@@ -25,9 +25,9 @@ object CommonController {
       Ok,
       header = Map(contentType),
       body = buildWithBase(Seq(
-        "<<title>>" -> title,
-        "<<head>>" -> "",
-        "<<body>>" -> body
+        "title" -> title,
+        "head" -> "",
+        "body" -> body
       )))
   }
 
@@ -41,9 +41,9 @@ object CommonController {
       Ok,
       header = Map(contentType),
       body = buildWithBase(Seq(
-        "<<title>>" -> title,
-        "<<head>>" -> "",
-        "<<body>>" -> body)))
+        "title" -> title,
+        "head" -> "",
+        "body" -> body)))
   }
 
   def asset: Action = req => {

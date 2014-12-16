@@ -16,11 +16,6 @@
   },
   {
     "method": "GET",
-    "regex": "^/postPage/?$",
-    "controller": "board.controller.BoardController.postPage"
-  },
-  {
-    "method": "GET",
     "regex": "^/.+$",
     "controller": "board.controller.CommonController.asset"
   }
