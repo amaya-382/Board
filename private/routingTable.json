@@ -1,22 +1,28 @@
 [
-  {
-    "method": "GET",
-    "regex": "^/?$",
-    "controller": "board.controller.CommonController.root"
-  },
-  {
-    "method": "GET",
-    "regex": "^/echo/?$",
-    "controller": "board.controller.CommonController.echo"
-  },
-  {
-    "method": "GET",
-    "regex": "^/board/?$",
-    "controller": "board.controller.BoardController.board"
-  },
-  {
-    "method": "GET",
-    "regex": "^/.+$",
-    "controller": "board.controller.CommonController.asset"
-  }
+    {
+        "method": "GET",
+        "regex": "^/?$",
+        "controller": "board.controller.CommonController.root"
+    },
+    {
+        "method": "GET",
+        "regex": "^/echo/?$",
+        "controller": "board.controller.CommonController.echo"
+    },
+    {
+        "method": "GET",
+        "regex": "^/board/?$",
+        "controller": "board.controller.BoardController.board"
+    },
+    {
+        "method": "POST",
+        "regex": "^/post/?$",
+        "controller": "board.controller.BoardController.post"
+
+    },
+    {
+        "method": "GET",
+        "regex": "^/.+$",
+        "controller": "board.controller.CommonController.asset"
+    }
 ]
