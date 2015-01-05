@@ -12,12 +12,12 @@
     {
         "method": "GET",
         "regex": "^/board/?$",
-        "controller": "board.controller.BoardController.board"
+        "controller": "board.controller.BoardController.boardG"
     },
     {
         "method": "POST",
-        "regex": "^/post/?$",
-        "controller": "board.controller.BoardController.post"
+        "regex": "^/board/?$",
+        "controller": "board.controller.BoardController.boardP"
 
     },
     {

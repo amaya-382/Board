@@ -3,10 +3,11 @@ package board.controller
 import java.io.File
 
 import simplehttpserver.impl._
-import simplehttpserver.util.Util._
-import simplehttpserver.util.Implicit._
+import simplehttpserver.util.EasyEmit
+import simplehttpserver.util.implicits.Implicit._
 
-object CommonController {
+
+object CommonController extends EasyEmit {
   type Action = HttpRequest => HttpResponse
   private val builder = new HtmlBuilder()
   private val base = getStringFromResources("base.html")
@@ -54,7 +55,7 @@ object CommonController {
 
         HttpResponse(req)(Ok, body = cont)
       case None =>
-        emitResponseFromFile(req)(NotFound, "404.html")
+        emitError(req)(NotFound)
     }
   }
 
