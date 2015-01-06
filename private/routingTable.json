@@ -11,6 +11,26 @@
     },
     {
         "method": "GET",
+        "regex":"^/board/signup/?$",
+        "controller":"board.controller.BoardController.signUpPage"
+    },
+    {
+        "method": "POST",
+        "regex":"^/board/signup/?$",
+        "controller":"board.controller.BoardController.signUp"
+    },
+    {
+        "method": "GET",
+        "regex":"^/board/login/?$",
+        "controller":"board.controller.BoardController.loginPage"
+    },
+    {
+        "method": "POST",
+        "regex":"^/board/login/?$",
+        "controller":"board.controller.BoardController.login"
+    },
+    {
+        "method": "GET",
         "regex": "^/board/?$",
         "controller": "board.controller.BoardController.boardG"
     },
@@ -18,7 +38,6 @@
         "method": "POST",
         "regex": "^/board/?$",
         "controller": "board.controller.BoardController.boardP"
-
     },
     {
         "method": "GET",
