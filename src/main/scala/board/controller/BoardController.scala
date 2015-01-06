@@ -3,8 +3,8 @@ package board.controller
 import java.io.PrintWriter
 
 import scala.util.control.NonFatal
+import board.entity.Post
 
-import board.impl.Post
 import org.json4s._
 import org.json4s.native.Serialization.{read, write}
 
