@@ -65,20 +65,8 @@ object BoardController extends EasyEmit {
 
         writeWithResult(path2UserData)(pw => {
           pw.print(write(newUsers))
-          /*val newSession =*/ req.refreshSession
-
-//          val contentType = "Content-Type" -> html.contentType
-//          val title = "Login"
-//          val head = """<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-//                       |<script src="./js/script.js" type="text/javascript"></script>
-//                       |<link href="./css/style.css" rel="stylesheet" type="text/css">""".stripMargin
-//
-//          HttpResponse(req)(
-//            status = Ok,
-//            header = Map(contentType,
-//              "Set-Cookie" -> s"SESSIONID=${newSession.sessionId}"),
-//            body = "")
-          boardG(req)
+          req.refreshSession(false)
+          boardPage(req)
         })(ex => {
           emitError(req)(InternalServerError)
         })
@@ -116,17 +104,47 @@ object BoardController extends EasyEmit {
     val contentType = "Content-Type" -> html.contentType
     val title = "Login"
 
-    null
+    HttpResponse(req)(
+      status = Ok,
+      header = Map(contentType),
+      body = buildWithBase(Seq(
+        "title" -> title,
+        "head" -> "",
+        "body" -> (loginBase getOrElse "")
+      )))
   }
 
   //login process
   def login: Action = req => {
-    null
+    (for {
+      id <- req.body.get("id")
+      pwd <- req.body.get("password")
+    } yield {
+      val users = getUsers
+
+      val salt = Security.hashBySHA384(id)
+      val hashedPwd = Security.hashBySHA384(pwd + salt)
+
+      users.find(user => user.id == id && user.hashedPwd == hashedPwd) match {
+        case Some(user) =>
+          req.refreshSession(false)
+          loggedIn(req)
+        case None =>
+          loginPage(req)
+      }
+    }) getOrElse emitError(req)(InternalServerError)
   }
 
-//TODO:sessionをチェックし, boardPageを利用するloggedinとして切り分ける
-//TODO:boardPageに変更
-  def boardG: Action = req => {
+  def boardPage: Action = req => {
+    req.session match {
+      case Some(s) if s.isVaild =>
+        loggedIn(req)
+      case _ =>
+        loginPage(req)
+    }
+  }
+
+  def loggedIn: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Board"
     val head = """<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -175,13 +193,7 @@ object BoardController extends EasyEmit {
   }
 
   //data.json取得, postを解析して追加, そこからresponse作成しつつdata.json更新
-  def boardP: Action = req => {
-    val contentType = "Content-Type" -> html.contentType
-    val title = "Board"
-    val head = """<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-                 |<script src="./js/script.js" type="text/javascript"></script>
-                 |<link href="./css/style.css" rel="stylesheet" type="text/css">""".stripMargin
-
+  def board: Action = req => {
     val posts = getStringFromFile(path2PostData) match {
       case Some(json) => read[List[Post]](json)
       case None => throw new Exception("route file not found")
@@ -204,38 +216,10 @@ object BoardController extends EasyEmit {
           escape(_) getOrElse ""
         })
     }
-    val added = write(newPosts)
 
     writeWithResult(path2PostData)(pw => {
-      pw.print(added)
-
-      val formed =
-        newPosts
-          .withFilter(_.enabled)
-          .map(post => {
-          val imgs = post.imgs
-            .map(i => s"""<img src="$i" class="img" />""")
-            .mkString
-          buildWithPostBase(Seq(
-            "name" -> post.name,
-            "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
-            "content" -> post.content,
-            "imgs" -> imgs
-          ))
-        })
-
-      val body = buildWithBoardBase(Seq(
-        "posts" -> formed.mkString
-      ))
-
-      HttpResponse(req)(
-        Ok,
-        header = Map(contentType),
-        body = buildWithBase(Seq(
-          "title" -> title,
-          "head" -> head,
-          "body" -> body))
-      )
+      pw.print(write(newPosts))
+      loggedIn(req)
     })(ex => {
       println(ex)
       emitError(req)(InternalServerError)

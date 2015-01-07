@@ -20,24 +20,19 @@
         "controller":"board.controller.BoardController.signUp"
     },
     {
-        "method": "GET",
-        "regex":"^/board/login/?$",
-        "controller":"board.controller.BoardController.loginPage"
-    },
-    {
         "method": "POST",
         "regex":"^/board/login/?$",
         "controller":"board.controller.BoardController.login"
     },
     {
         "method": "GET",
-        "regex": "^/board/?$",
-        "controller": "board.controller.BoardController.boardG"
+        "regex": "^/board(/login)?/?$",
+        "controller": "board.controller.BoardController.boardPage"
     },
     {
         "method": "POST",
         "regex": "^/board/?$",
-        "controller": "board.controller.BoardController.boardP"
+        "controller": "board.controller.BoardController.board"
     },
     {
         "method": "GET",
