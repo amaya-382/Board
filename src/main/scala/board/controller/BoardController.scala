@@ -49,8 +49,8 @@ object BoardController extends EasyEmit {
   //sign up process
   def signUp: Action = req => {
     (for {
-      id <- req.body.get("id")
-      pwd <- req.body.get("password")
+      id <- req.body.get("id").flatMap(dropCtrlChar)
+      pwd <- req.body.get("password").flatMap(dropCtrlChar)
       name <- req.body.get("name")
     } yield {
       //id, pwd に使えない文字が入っていた場合は再度signUpPageへ
@@ -61,7 +61,8 @@ object BoardController extends EasyEmit {
       else {
         val salt = Security.hashBySHA384(id)
         val hashedPwd = Security.hashBySHA384(pwd + salt)
-        val newUsers = getUsers :+ User(id, hashedPwd, name)
+        val newUsers = getUsers :+
+          User(id, hashedPwd, escape(name) getOrElse id)
 
         writeWithResult(path2UserData)(pw => {
           pw.print(write(newUsers))
