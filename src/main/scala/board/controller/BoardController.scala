@@ -137,12 +137,21 @@ object BoardController extends EasyEmit {
   }
 
   def signOut: Action = req => {
-    val cookie = "Set-Cookie" -> "SESSIONID=; expires=Thu, 1-Jan-1970 00:00:00 GMT; path=/board;"
-    val location = "Location" -> "/board"
+    val cookieHeader = "Set-Cookie" -> "SESSIONID=; expires=Thu, 1-Jan-1970 00:00:00 GMT; path=/board;"
+    val locationHeader = "Location" -> "/board"
 
     HttpResponse(req)(
       status = MovedPermanently,
-      header = Map(cookie, location),
+      header = Map(cookieHeader, locationHeader),
+      body = "")
+  }
+
+  def redirect2Board: Action = req => {
+    val locationHeader = "Location" -> "/board"
+
+    HttpResponse(req)(
+      status = MovedPermanently,
+      header = Map(locationHeader),
       body = "")
   }
 

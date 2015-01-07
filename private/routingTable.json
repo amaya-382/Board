@@ -36,8 +36,13 @@
     },
     {
         "method": "GET",
-        "regex": "^/board(/.*)?$",
+        "regex": "^/board/?$",
         "controller": "board.controller.BoardController.boardPage"
+    },
+    {
+        "method": "GET",
+        "regex": "^/board/.+$",
+        "controller": "board.controller.BoardController.redirect2Board"
     },
     {
         "method": "GET",
