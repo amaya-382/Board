@@ -25,7 +25,7 @@ object BoardController extends EasyEmit {
   private val signUpBase = getStringFromResources("signUpBase.html")
   //  private val buildWithSignUpBase = builder.buildHtml(signUpBase getOrElse "") _
   private val loginBase = getStringFromResources("loginBase.html")
-  private val buildWithLoginBase = builder.buildHtml(loginBase getOrElse "") _
+  //  private val buildWithLoginBase = builder.buildHtml(loginBase getOrElse "") _
   private val postBase = getStringFromResources("postBase.html")
   private val buildWithPostBase = builder.buildHtml(postBase getOrElse "") _
   private val boardBase = getStringFromResources("boardBase.html")
@@ -99,8 +99,8 @@ object BoardController extends EasyEmit {
     }
   }
 
-  //login page
-  def loginPage: Action = req => {
+  //sign in page
+  def signInPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Login"
 
@@ -114,8 +114,8 @@ object BoardController extends EasyEmit {
       )))
   }
 
-  //login process
-  def login: Action = req => {
+  //sign in process
+  def signIn: Action = req => {
     (for {
       id <- req.body.get("id")
       pwd <- req.body.get("password")
@@ -128,9 +128,9 @@ object BoardController extends EasyEmit {
       users.find(user => user.id == id && user.hashedPwd == hashedPwd) match {
         case Some(user) =>
           req.refreshSession(false)
-          loggedIn(req)
+          signedIn(req)
         case None =>
-          loginPage(req)
+          signInPage(req)
       }
     }) getOrElse emitError(req)(InternalServerError)
   }
@@ -138,13 +138,13 @@ object BoardController extends EasyEmit {
   def boardPage: Action = req => {
     req.session match {
       case Some(s) if s.isVaild =>
-        loggedIn(req)
+        signedIn(req)
       case _ =>
-        loginPage(req)
+        signInPage(req)
     }
   }
 
-  def loggedIn: Action = req => {
+  def signedIn: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Board"
     val head = """<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -192,7 +192,6 @@ object BoardController extends EasyEmit {
     )
   }
 
-  //data.json取得, postを解析して追加, そこからresponse作成しつつdata.json更新
   def board: Action = req => {
     val posts = getStringFromFile(path2PostData) match {
       case Some(json) => read[List[Post]](json)
@@ -219,7 +218,7 @@ object BoardController extends EasyEmit {
 
     writeWithResult(path2PostData)(pw => {
       pw.print(write(newPosts))
-      loggedIn(req)
+      signedIn(req)
     })(ex => {
       println(ex)
       emitError(req)(InternalServerError)

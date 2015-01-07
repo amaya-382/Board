@@ -21,12 +21,12 @@
     },
     {
         "method": "POST",
-        "regex":"^/board/login/?$",
-        "controller":"board.controller.BoardController.login"
+        "regex":"^/board/singin/?$",
+        "controller":"board.controller.BoardController.signIn"
     },
     {
         "method": "GET",
-        "regex": "^/board(/login)?/?$",
+        "regex": "^/board/?$",
         "controller": "board.controller.BoardController.boardPage"
     },
     {
