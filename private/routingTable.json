@@ -21,7 +21,7 @@
     },
     {
         "method": "POST",
-        "regex":"^/board/singin/?$",
+        "regex":"^/board/signin/?$",
         "controller":"board.controller.BoardController.signIn"
     },
     {
