@@ -16,7 +16,6 @@ object BoardController extends EasyEmit {
   type Action = HttpRequest => HttpResponse
   implicit private val formats = DefaultFormats
 
-
   private val path2PostData = "./private/post.json"
   private val path2UserData = "./private/user.json"
 
@@ -25,8 +24,8 @@ object BoardController extends EasyEmit {
   private val buildWithBase = builder.buildHtml(base getOrElse "") _
   private val signUpBase = getStringFromResources("signUpBase.html")
   //  private val buildWithSignUpBase = builder.buildHtml(signUpBase getOrElse "") _
-  private val loginBase = getStringFromResources("loginBase.html")
-  //  private val buildWithLoginBase = builder.buildHtml(loginBase getOrElse "") _
+  private val signInBase = getStringFromResources("signInBase.html")
+  //  private val buildWithLoginBase = builder.buildHtml(signInBase getOrElse "") _
   private val postBase = getStringFromResources("postBase.html")
   private val buildWithPostBase = builder.buildHtml(postBase getOrElse "") _
   private val boardBase = getStringFromResources("boardBase.html")
@@ -57,7 +56,7 @@ object BoardController extends EasyEmit {
       body = buildWithBase(Seq(
         "title" -> title,
         "head" -> "",
-        "body" -> (loginBase getOrElse "")
+        "body" -> (signInBase getOrElse "")
       )))
   }
 
