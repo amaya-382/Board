@@ -25,6 +25,11 @@
         "controller":"board.controller.BoardController.signIn"
     },
     {
+        "method": "GET",
+        "regex":"^/board/signout/?$",
+        "controller":"board.controller.BoardController.signOut"
+    },
+    {
         "method": "POST",
         "regex": "^/board/?$",
         "controller": "board.controller.BoardController.board"

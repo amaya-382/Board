@@ -136,6 +136,16 @@ object BoardController extends EasyEmit {
     }) getOrElse emitError(req)(InternalServerError)
   }
 
+  def signOut: Action = req => {
+    val cookie = "Set-Cookie" -> "SESSIONID=; expires=Thu, 1-Jan-1970 00:00:00 GMT; path=/board;"
+    val location = "Location" -> "/board"
+
+    HttpResponse(req)(
+      status = MovedPermanently,
+      header = Map(cookie, location),
+      body = "")
+  }
+
   def boardPage: Action = req => {
     req.session match {
       case Some(s) if s.isVaild =>
@@ -172,11 +182,14 @@ object BoardController extends EasyEmit {
         ))
       })
 
-    val sessionId = req.session.map(_.sessionId).getOrElse("")
+    val cookieHeader = {
+      val sessionId = req.session.map(_.sessionId).getOrElse("")
+      "Set-Cookie" -> s"SESSIONID=$sessionId; path=/board;"
+    }
+
     val user = req.session flatMap {
       s => getUsers find (_.id == s.id)
     }
-
     val body = buildWithBoardBase(Seq(
       "name" -> user.map(_.name).getOrElse(""),
       "posts" -> formed.mkString
@@ -184,8 +197,7 @@ object BoardController extends EasyEmit {
 
     HttpResponse(req)(
       Ok,
-      header = Map(contentType,
-        "Set-Cookie" -> s"SESSIONID=$sessionId"),
+      header = Map(contentType, cookieHeader),
       body = buildWithBase(Seq(
         "title" -> title,
         "head" -> head,
