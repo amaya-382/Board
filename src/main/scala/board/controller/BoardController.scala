@@ -32,7 +32,7 @@ object BoardController extends EasyEmit {
   private val boardBase = getStringFromResources("boardBase.html")
   private val buildWithBoardBase = builder.buildHtml(boardBase getOrElse "") _
 
-  //sign up page
+
   def signUpPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Sing up"
@@ -47,62 +47,6 @@ object BoardController extends EasyEmit {
       )))
   }
 
-  //sign up process
-  def signUp: Action = req => {
-    (for {
-      id <- req.body.get("id").flatMap(dropCtrlChar)
-      pwd <- req.body.get("password").flatMap(dropCtrlChar)
-      name <- req.body.get("name")
-    } yield {
-      //id, pwd に使えない文字が入っていた場合は再度signUpPageへ
-      if (!validate4Id(id) || !validate4Pwd(pwd))
-        signUpPage(req) //TODO:msg表示
-      else if (isExistingUser(id))
-        signUpPage(req) //TODO:msg表示
-      else {
-        val salt = Security.hashBySHA384(id)
-        val hashedPwd = Security.hashBySHA384(pwd + salt)
-        val newUsers = getUsers :+
-          User(id, hashedPwd, escape(name) getOrElse id)
-
-        writeWithResult(path2UserData)(pw => {
-          pw.print(write(newUsers))
-          req.refreshSession(false)
-          pw.flush()
-          boardPage(req)
-        })(ex => {
-          emitError(req)(InternalServerError)
-        })
-      }
-    }) getOrElse emitError(req)(InternalServerError)
-  }
-
-  //TODO: ajax用に公開
-  private def validate4Id(id: String): Boolean = {
-    id forall { c =>
-      c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
-    }
-  }
-
-  private def validate4Pwd(pwd: String): Boolean = {
-    pwd forall { c =>
-      c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
-    }
-  }
-
-  //TODO: ajax用に公開
-  private def isExistingUser(id: String): Boolean = {
-    getUsers exists (_.id == id)
-  }
-
-  private def getUsers: List[User] = {
-    getStringFromFile(path2UserData) match {
-      case Some(json) => read[List[User]](json)
-      case None => throw new Exception("route file not found")
-    }
-  }
-
-  //sign in page
   def signInPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Login"
@@ -115,55 +59,6 @@ object BoardController extends EasyEmit {
         "head" -> "",
         "body" -> (loginBase getOrElse "")
       )))
-  }
-
-  //sign in process
-  def signIn: Action = req => {
-    (for {
-      id <- req.body.get("id")
-      pwd <- req.body.get("password")
-    } yield {
-      val users = getUsers
-
-      val salt = Security.hashBySHA384(id)
-      val hashedPwd = Security.hashBySHA384(pwd + salt)
-
-      users.find(user => user.id == id && user.hashedPwd == hashedPwd) match {
-        case Some(user) =>
-          req.refreshSession(false)
-          signedIn(req)
-        case None =>
-          signInPage(req)
-      }
-    }) getOrElse emitError(req)(InternalServerError)
-  }
-
-  def signOut: Action = req => {
-    val cookieHeader = "Set-Cookie" -> "SESSIONID=; expires=Thu, 1-Jan-1970 00:00:00 GMT; path=/board;"
-    val locationHeader = "Location" -> "/board"
-
-    HttpResponse(req)(
-      status = MovedPermanently,
-      header = Map(cookieHeader, locationHeader),
-      body = "")
-  }
-
-  def redirect2Board: Action = req => {
-    val locationHeader = "Location" -> "/board"
-
-    HttpResponse(req)(
-      status = MovedPermanently,
-      header = Map(locationHeader),
-      body = "")
-  }
-
-  def boardPage: Action = req => {
-    req.session match {
-      case Some(s) if s.isVaild =>
-        signedIn(req)
-      case _ =>
-        signInPage(req)
-    }
   }
 
   def signedIn: Action = req => {
@@ -212,7 +107,85 @@ object BoardController extends EasyEmit {
     )
   }
 
-  def board: Action = req => {
+  def boardPage: Action = req => {
+    req.session match {
+      case Some(s) if s.isVaild =>
+        signedIn(req)
+      case _ =>
+        signInPage(req)
+    }
+  }
+
+  def redirect2Board: Action = req => {
+    val locationHeader = "Location" -> "/board"
+
+    HttpResponse(req)(
+      status = MovedPermanently,
+      header = Map(locationHeader),
+      body = "")
+  }
+
+
+  def signUp: Action = req => {
+    (for {
+      id <- req.body.get("id").flatMap(dropCtrlChar)
+      pwd <- req.body.get("password").flatMap(dropCtrlChar)
+      name <- req.body.get("name")
+    } yield {
+      //id, pwd に使えない文字が入っていた場合は再度signUpPageへ
+      if (!validate4Id(id) || !validate4Pwd(pwd))
+        signUpPage(req) //TODO:msg表示
+      else if (isExistingUser(id))
+        signUpPage(req) //TODO:msg表示
+      else {
+        val salt = Security.hashBySHA384(id)
+        val hashedPwd = Security.hashBySHA384(pwd + salt)
+        val newUsers = getUsers :+
+          User(id, hashedPwd, escape(name) getOrElse id)
+
+        writeWithResult(path2UserData)(pw => {
+          pw.print(write(newUsers))
+          req.refreshSession(false)
+          pw.flush()
+          boardPage(req)
+        })(ex => {
+          emitError(req)(InternalServerError)
+        })
+      }
+    }) getOrElse emitError(req)(InternalServerError)
+  }
+
+  def signIn: Action = req => {
+    (for {
+      id <- req.body.get("id")
+      pwd <- req.body.get("password")
+    } yield {
+      val users = getUsers
+
+      val salt = Security.hashBySHA384(id)
+      val hashedPwd = Security.hashBySHA384(pwd + salt)
+
+      users.find(user => user.id == id && user.hashedPwd == hashedPwd) match {
+        case Some(user) =>
+          req.refreshSession(false)
+          signedIn(req)
+        case None =>
+          signInPage(req)
+      }
+    }) getOrElse emitError(req)(InternalServerError)
+  }
+
+  def signOut: Action = req => {
+    val cookieHeader = "Set-Cookie" -> "SESSIONID=; expires=Thu, 1-Jan-1970 00:00:00 GMT; path=/board;"
+    val locationHeader = "Location" -> "/board"
+
+    HttpResponse(req)(
+      status = MovedPermanently,
+      header = Map(cookieHeader, locationHeader),
+      body = "")
+  }
+
+  def post: Action = req => {
     val posts = getStringFromFile(path2PostData) match {
       case Some(json) => read[List[Post]](json)
       case None => throw new Exception("route file not found")
@@ -240,6 +213,32 @@ object BoardController extends EasyEmit {
           pw.flush()
           signedIn(req)
         })(ex => emitError(req)(InternalServerError))
+    }
+  }
+
+
+  //TODO: ajax用に公開
+  private def validate4Id(id: String): Boolean = {
+    id forall { c =>
+      c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
+    }
+  }
+
+  private def validate4Pwd(pwd: String): Boolean = {
+    pwd forall { c =>
+      c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
+    }
+  }
+
+  //TODO: ajax用に公開
+  private def isExistingUser(id: String): Boolean = {
+    getUsers exists (_.id == id)
+  }
+
+  private def getUsers: List[User] = {
+    getStringFromFile(path2UserData) match {
+      case Some(json) => read[List[User]](json)
+      case None => throw new Exception("route file not found")
     }
   }
 }
