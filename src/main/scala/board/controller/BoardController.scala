@@ -180,14 +180,10 @@ object BoardController extends EasyEmit {
       posts
         .withFilter(_.enabled)
         .map(post => {
-        val imgs = post.imgs
-          .map(i => s"""<img src="$i" class="img" />""")
-          .mkString
         buildWithPostBase(Seq(
           "name" -> post.name,
           "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
-          "content" -> post.content,
-          "imgs" -> imgs
+          "content" -> post.content
         ))
       })
 
@@ -221,21 +217,16 @@ object BoardController extends EasyEmit {
     }
 
     val newPosts = {
-      val name = req.body.getOrElse("name", "")
+      val user = req.session.map(_.id).flatMap(id => getUsers find (_.id == id))
+      val name = user.map(_.name) getOrElse ""
       val date = Some(new java.util.Date())
       val content = req.body.getOrElse("content", "")
-      val imgs = req.body.get("imgs") match {
-        case Some(x) => List() //TODO: x:String(=json array) を List[String] に変換
-        case None => List()
-      }
+
       posts :+ Post(
         true,
         escape(name) getOrElse "",
         date,
-        escape(content) getOrElse "",
-        imgs map {
-          escape(_) getOrElse ""
-        })
+        escape(content) getOrElse "")
     }
 
     writeWithResult(path2PostData)(pw => {
