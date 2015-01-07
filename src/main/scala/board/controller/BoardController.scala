@@ -11,6 +11,7 @@ import simplehttpserver.util.implicits.Implicit._
 import simplehttpserver.util.Security._
 import simplehttpserver.util.Common._
 
+
 object BoardController extends EasyEmit {
   type Action = HttpRequest => HttpResponse
   implicit private val formats = DefaultFormats
@@ -67,12 +68,13 @@ object BoardController extends EasyEmit {
         writeWithResult(path2UserData)(pw => {
           pw.print(write(newUsers))
           req.refreshSession(false)
+          pw.flush()
           boardPage(req)
         })(ex => {
           emitError(req)(InternalServerError)
         })
       }
-    }) getOrElse emitError(null)(InternalServerError)
+    }) getOrElse emitError(req)(InternalServerError)
   }
 
   //TODO: ajax用に公開
@@ -216,25 +218,28 @@ object BoardController extends EasyEmit {
       case None => throw new Exception("route file not found")
     }
 
-    val newPosts = {
-      val user = req.session.map(_.id).flatMap(id => getUsers find (_.id == id))
-      val name = user.map(_.name) getOrElse ""
-      val date = Some(new java.util.Date())
-      val content = req.body.getOrElse("content", "")
+    val user = req.session.map(_.id).flatMap(id => getUsers find (_.id == id))
+    user match {
+      case None =>
+        emitError(req)(BadRequest)
+      case Some(u) =>
+        val newPosts = {
 
-      posts :+ Post(
-        true,
-        escape(name) getOrElse "",
-        date,
-        escape(content) getOrElse "")
+          val date = Some(new java.util.Date())
+          val content = req.body.getOrElse("content", "")
+
+          posts :+ Post(
+            true,
+            escape(u.name) getOrElse "",
+            date,
+            escape(content) getOrElse "")
+        }
+
+        writeWithResult(path2PostData)(pw => {
+          pw.print(write(newPosts))
+          pw.flush()
+          signedIn(req)
+        })(ex => emitError(req)(InternalServerError))
     }
-
-    writeWithResult(path2PostData)(pw => {
-      pw.print(write(newPosts))
-      signedIn(req)
-    })(ex => {
-      println(ex)
-      emitError(req)(InternalServerError)
-    })
   }
 }
