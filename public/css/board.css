@@ -1,0 +1,71 @@
+button {
+    width: 250px;
+    margin-top: 20px;
+    background-color: coral;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Oswald', sans-serif;
+    font-size: larger;
+    cursor: pointer;
+}
+
+button:hover {
+    -webkit-transition: all 500ms linear;
+    -moz-transition: all 500ms linear;
+    -ms-transition: all 500ms linear;
+    -o-transition: all 500ms linear;
+    transition: all 500ms linear;
+    background-color: #3CBC4D;
+}
+
+.flip_button span {
+    -webkit-transition: all 100ms linear;
+    -moz-transition: all 100ms linear;
+    -ms-transition: all 100ms linear;
+    -o-transition: all 100ms linear;
+    transition: all 100ms linear;
+}
+
+.flip_button span:first-child {
+    font-size: inherit;
+}
+
+.flip_button:hover span:first-child {
+    font-size: 0;
+}
+
+.flip_button span:last-child {
+    font-size: 0;
+}
+
+.flip_button:hover span:last-child {
+    font-size: inherit;
+}
+
+.separator {
+    border: none;
+    border-top: 1px solid #311;
+    height: 1px;
+    text-align: center;
+
+    height: 1px;
+    background: #311;
+    background-image: -webkit-linear-gradient(left, #FFFFFF, #311, #FFFFFF);
+    background-image: -moz-linear-gradient(left, #FFFFFF, #311, #FFFFFF);
+    background-image: -ms-linear-gradient(left, #FFFFFF, #311, #FFFFFF);
+    background-image: -o-linear-gradient(left, #FFFFFF, #311, #FFFFFF);
+}
+
+.separator:after {
+    content: '✑';
+    display: inline-block;
+    position: relative;
+    top: -14px;
+    padding: 0 10px;
+    background: #FAA;
+    color: #311;
+    font-size: 30px;
+    -webkit-transform: rotate(-50deg);
+    -moz-transform: rotate(-50deg);
+    transform: rotate(-50deg);
+}

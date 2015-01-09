@@ -1,0 +1,111 @@
+html {
+    width: 100%;
+    height: 100%;
+    background: rgb(255, 170, 170); /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgb(255, 170, 170)), color-stop(70%, rgb(255, 170, 170)), color-stop(100%, rgb(206, 140, 140))); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* IE10+ */
+    background: radial-gradient(ellipse at center, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffaaaa', endColorstr='#ce8c8c', GradientType=1); /* IE6-9 fallback on horizontal gradient */
+}
+
+.logo {
+    font-family: 'Rock Salt', cursive;
+    font-size: 11em;
+    text-align: center;
+    margin: 120px 20px -50px 20px;
+    color: #311;
+    max-width: 100%;
+}
+
+.sign {
+    width: 270px;
+    margin: 0 auto;
+}
+
+.sign_form {
+    width: 270px;
+    margin: 20px auto;
+    font-size: 17px;
+    color: #311;
+}
+
+label, input, .sign p, .sign button {
+    display: block;
+    float: left;
+}
+
+#p_signin {
+    width: 50px;
+}
+
+#p_or {
+    width: 30px;
+}
+
+label, input {
+    margin-bottom: 15px;
+}
+
+label, .sign p {
+    font-family: 'Open Sans Condensed', sans-serif;
+}
+
+label {
+    width: 100px;
+    text-align: right;
+    margin-right: 30px;
+}
+
+.sign p {
+    width: 250px;
+    padding: 10px;
+    font-size: larger;
+    margin-bottom: 20px;
+}
+
+#button_tosignup {
+    width: 132px;
+    height: 50px;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+#button_tosignin {
+    width: 132px;
+    height: 50px;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+#button_join {
+    margin-top: 0;
+}
+
+#button_go {
+    /*margin-top: 5px;*/
+}
+
+form br {
+    clear: left;
+}
+
+input[type="text"], input[type="password"] {
+    outline: 0;
+    border: none;
+    border-bottom: solid 1px #311;
+    background: transparent;
+    text-align: center;
+}
+
+input[type="text"]:hover, input[type="password"]:hover,
+input[type="text"]:focus, input[type="password"]:focus {
+    -webkit-transition: all 200ms linear;
+    -moz-transition: all 200ms linear;
+    -ms-transition: all 200ms linear;
+    -o-transition: all 200ms linear;
+    transition: all 200ms linear;
+    border: solid 2px coral;
+}

@@ -31,6 +31,15 @@ object BoardController extends EasyEmit {
   private val boardBase = getStringFromResources("boardBase.html")
   private val buildWithBoardBase = builder.buildHtml(boardBase getOrElse "") _
 
+  private val head4sign = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+                            |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
+                            |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                            |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                            |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                            |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                            |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
+                            | """.stripMargin
+
 
   def signUpPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
@@ -41,7 +50,7 @@ object BoardController extends EasyEmit {
       header = Map(contentType),
       body = buildWithBase(Seq(
         "title" -> title,
-        "head" -> "",
+        "head" -> head4sign,
         "body" -> (signUpBase getOrElse "")
       )))
   }
@@ -55,7 +64,7 @@ object BoardController extends EasyEmit {
       header = Map(contentType),
       body = buildWithBase(Seq(
         "title" -> title,
-        "head" -> "",
+        "head" -> head4sign,
         "body" -> (signInBase getOrElse "")
       )))
   }
@@ -63,9 +72,14 @@ object BoardController extends EasyEmit {
   def signedIn: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Board"
-    val head = """<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+                 |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
                  |<script src="/js/script.js" type="text/javascript"></script>
-                 |<link href="/css/style.css" rel="stylesheet" type="text/css">""".stripMargin
+                 |<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                 |<link href="/css/board.css" rel="stylesheet" type="text/css">""".stripMargin
 
     val posts = getStringFromFile(path2PostData) match {
       case Some(json) => read[List[Post]](json)
@@ -129,12 +143,13 @@ object BoardController extends EasyEmit {
     (for {
       id <- req.body.get("id").flatMap(dropCtrlChar)
       pwd <- req.body.get("password").flatMap(dropCtrlChar)
+      repwd <- req.body.get("reinput").flatMap(dropCtrlChar)
       name <- req.body.get("name")
     } yield {
       //id, pwd に使えない文字が入っていた場合は再度signUpPageへ
-      if (!validate4Id(id) || !validate4Pwd(pwd))
+      if (!validate4Id(id))
         signUpPage(req) //TODO:msg表示
-      else if (isExistingUser(id))
+      else if (!validate4Pwd(pwd, repwd))
         signUpPage(req) //TODO:msg表示
       else {
         val salt = Security.hashBySHA384(id)
@@ -218,15 +233,17 @@ object BoardController extends EasyEmit {
 
   //TODO: ajax用に公開
   private def validate4Id(id: String): Boolean = {
-    id forall { c =>
-      c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
-    }
+    !isExistingUser(id) &&
+      (id forall { c =>
+        c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
+      })
   }
 
-  private def validate4Pwd(pwd: String): Boolean = {
-    pwd forall { c =>
-      c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
-    }
+  private def validate4Pwd(pwd: String, reinput: String): Boolean = {
+    pwd == reinput &&
+      (pwd forall { c =>
+        c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
+      })
   }
 
   //TODO: ajax用に公開

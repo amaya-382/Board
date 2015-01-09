@@ -1,11 +1,23 @@
-<p>Sign up</p>
+<h1 class="logo">Board</h1>
+<hr/>
+<div class="sign">
+    <p id="p_signin">Sign up</p>
 
-<form action="/board/signup" method="POST">
-    <label for="id">ID: </label>
-    <input type="text" name="id" id="id"/>
-    <label for="password">パスワード: </label>
-    <input type="password" name="password" id="password"/>
-    <label for="name">名前: </label>
-    <input type="text" name="name" id="name"/>
-    <input type="submit" value="登録"/>
-</form>
+    <p id="p_or">or</p>
+    <button id="button_tosignup" class="flip_button"
+            onclick="location.href='/board/signin'">
+        <span>Already have?</span>
+        <span>Sign in</span>
+    </button>
+    <form action="/board/signup" method="POST">
+        <label for="id">ID</label>
+        <input type="text" name="id" id="id"/> <br/>
+        <label for="password">PASSWORD</label>
+        <input type="password" name="password" id="password"/> <br/>
+        <label for="reinput">RE</label>
+        <input type="password" name="reinput" id="reinput"/> <br/>
+        <label for="name">NAME</label>
+        <input type="text" name="name" id="name"/> <br/>
+        <button type="submit" id="button_join">join</button>
+    </form>
+</div>

@@ -1,8 +1,19 @@
-<p>Sign in</p>
-<form action="/board/signin" method="POST">
-    <label for="id">ID: </label>
-    <input type="text" name="id" id="id"/>
-    <label for="password">パスワード: </label>
-    <input type="password" name="password" id="password"/>
-    <input type="submit" value="送信"/>
-</form>
+<h1 class="logo">Board</h1>
+<hr/>
+<div class="sign">
+    <p id="p_signin">Sign in</p>
+
+    <p id="p_or">or</p>
+    <button id="button_tosignup" class="flip_button"
+            onclick="location.href='/board/signup'">
+        <span>Now to Board?</span>
+        <span>Sign up</span>
+    </button>
+    <form action="/board/signin" method="POST" class="sign_form">
+        <label for="id">ID</label>
+        <input type="text" name="id" id="id"/> <br/>
+        <label for="password">PASSWORD</label>
+        <input type="password" name="password" id="password"/> <br/>
+        <button type="submit" id="button_go">go</button>
+    </form>
+</div>
