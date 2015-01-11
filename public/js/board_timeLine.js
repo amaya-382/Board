@@ -7,4 +7,9 @@ $(function () {
                 $("#" + res).remove();
             });
     });
+
+    var $time_line = $("#content");
+    setTimeout(function () {
+        $time_line.scrollTop($time_line[0].scrollHeight);
+    }, 100);
 });
