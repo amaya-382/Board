@@ -36,6 +36,7 @@ object BoardController extends EasyEmit {
 
   private val head4sign = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                             |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
+                            |<script src="/js/board_signup.js" type="text/javascript"></script>
                             |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
                             |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
                             |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>

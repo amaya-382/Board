@@ -1,12 +1,12 @@
 body {
-    background: rgb(255,170,170); /* Old browsers */
-    background: -moz-radial-gradient(center, ellipse cover,  rgb(255,170,170) 0%, rgb(255,170,170) 70%, rgb(206,140,140) 100%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,170,170)), color-stop(70%,rgb(255,170,170)), color-stop(100%,rgb(206,140,140))); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,170,170) 0%,rgb(255,170,170) 70%,rgb(206,140,140) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover,  rgb(255,170,170) 0%,rgb(255,170,170) 70%,rgb(206,140,140) 100%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover,  rgb(255,170,170) 0%,rgb(255,170,170) 70%,rgb(206,140,140) 100%); /* IE10+ */
-    background: radial-gradient(ellipse at center,  rgb(255,170,170) 0%,rgb(255,170,170) 70%,rgb(206,140,140) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffaaaa', endColorstr='#ce8c8c',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background: rgb(255, 170, 170); /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgb(255, 170, 170)), color-stop(70%, rgb(255, 170, 170)), color-stop(100%, rgb(206, 140, 140))); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* IE10+ */
+    background: radial-gradient(ellipse at center, rgb(255, 170, 170) 0%, rgb(255, 170, 170) 70%, rgb(206, 140, 140) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffaaaa', endColorstr='#ce8c8c', GradientType=1); /* IE6-9 fallback on horizontal gradient */
 }
 
 .logo {
@@ -90,7 +90,7 @@ form br {
     clear: left;
 }
 
-input[type="text"], input[type="password"] {
+.underline {
     outline: 0;
     border: none;
     border-bottom: solid 1px #311;
@@ -98,12 +98,35 @@ input[type="text"], input[type="password"] {
     text-align: center;
 }
 
-input[type="text"]:hover, input[type="password"]:hover,
-input[type="text"]:focus, input[type="password"]:focus {
+.underline:hover, .underline:hover {
     -webkit-transition: all 200ms linear;
     -moz-transition: all 200ms linear;
     -ms-transition: all 200ms linear;
     -o-transition: all 200ms linear;
     transition: all 200ms linear;
     border: solid 2px coral;
+}
+
+.underline_red {
+    border: none;
+    border-bottom: solid 2px red;
+}
+
+.underline_green {
+    border: none;
+    border-bottom: solid 2px lawngreen;
+}
+
+#label_reinput span {
+    display: none;
+    margin: 3px;
+    padding: 2px;
+}
+
+#label_reinput span:first-child {
+    background-color: red;
+}
+
+#label_reinput span:last-child {
+    background-color: lawngreen;
 }

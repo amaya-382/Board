@@ -11,13 +11,17 @@
     </button>
     <form action="/board/signup" method="POST">
         <label for="id">ID</label>
-        <input type="text" name="id" id="id"/> <br/>
+        <input type="text" name="id" id="id" class="underline"/> <br/>
         <label for="password">PASSWORD</label>
-        <input type="password" name="password" id="password"/> <br/>
-        <label for="reinput">RE</label>
-        <input type="password" name="reinput" id="reinput"/> <br/>
+        <input type="password" name="password" id="password" class="underline"/> <br/>
+        <label for="reinput" id="label_reinput">
+            <span>not match</span>
+            <span>match, ok</span>
+            RE
+        </label>
+        <input type="password" name="reinput" id="reinput" class="underline"/> <br/>
         <label for="name">NAME</label>
-        <input type="text" name="name" id="name"/> <br/>
+        <input type="text" name="name" id="name" class="underline"/> <br/>
         <button type="submit" id="button_join">join</button>
     </form>
 </div>
