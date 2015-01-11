@@ -4,6 +4,7 @@ import board.entity._
 
 import org.json4s._
 import org.json4s.native.Serialization.{read, write}
+import com.tristanhunt.knockoff.DefaultDiscounter._
 
 import simplehttpserver.impl._
 import simplehttpserver.util.{Security, EasyEmit}
@@ -101,7 +102,8 @@ object BoardController extends EasyEmit {
           "isOwn" -> (if (user.exists(_.id == post.id)) "own" else ""),
           "name" -> userList.find(_.id == post.id).map(_.name).getOrElse("x"),
           "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
-          "content" -> post.content.replaceAll("&lt;br&gt;", "<br>")
+          "content" -> toXHTML(knockoff(
+            post.content.replaceAll("""\\r\\n""", "\r\n"))).toString
         ))
       })
 
@@ -222,7 +224,7 @@ object BoardController extends EasyEmit {
         val newPosts = {
           val date = Some(new java.util.Date())
           val content = req.body.getOrElse("content", "")
-            .replaceAll( """\r\n|\n""", "<br>")
+            .replaceAll( """\r\n|\n""", """\\r\\n""")
 
           posts :+ Post(
             true,
