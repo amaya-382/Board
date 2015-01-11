@@ -11,7 +11,7 @@ object CommonController extends EasyEmit {
   type Action = HttpRequest => HttpResponse
   private val builder = new HtmlBuilder()
   private val base = getStringFromResources("base.html")
-  private val buildWithBase = builder.buildHtml(base.get) _
+  private val buildWithBase = builder.buildHtml(base getOrElse "") _
 
   def root: Action = req => {
     val contentType = "Content-Type" -> html.contentType
