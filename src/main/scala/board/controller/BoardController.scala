@@ -103,7 +103,7 @@ object BoardController extends EasyEmit {
           "name" -> userList.find(_.id == post.id).map(_.name).getOrElse("x"),
           "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
           "content" -> toXHTML(knockoff(
-            post.content.replaceAll("""\\r\\n""", "\r\n"))).toString
+            post.content.replaceAll( """\\r\\n""", "\r\n"))).toString
         ))
       })
 
@@ -228,7 +228,7 @@ object BoardController extends EasyEmit {
 
           posts :+ Post(
             true,
-            escape(u.id) getOrElse "",
+            u.id,
             date,
             escape(content) getOrElse "")
         }
@@ -244,17 +244,11 @@ object BoardController extends EasyEmit {
 
   //TODO: ajax用に公開
   private def validate4Id(id: String): Boolean = {
-    !isExistingUser(id) &&
-      (id forall { c =>
-        c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
-      })
+    !isExistingUser(id)
   }
 
   private def validate4Pwd(pwd: String, reinput: String): Boolean = {
-    pwd == reinput &&
-      (pwd forall { c =>
-        c != '<' || c != '>' || c != '"' || c != '\'' || c != '\\'
-      })
+    pwd == reinput
   }
 
   //TODO: ajax用に公開
