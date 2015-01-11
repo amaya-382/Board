@@ -9,8 +9,12 @@
         <span>Already have?</span>
         <span>Sign in</span>
     </button>
-    <form action="/board/signup" method="POST">
-        <label for="id">ID</label>
+    <form action="/board/signup" method="POST" class="sign_form" id="signup_form">
+        <label for="id" id="label_id">
+            <span>not available</span>
+            <span>available, ok</span>
+            ID
+        </label>
         <input type="text" name="id" id="id" class="underline"/> <br/>
         <label for="password">PASSWORD</label>
         <input type="password" name="password" id="password" class="underline"/> <br/>

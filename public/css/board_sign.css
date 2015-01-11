@@ -117,16 +117,16 @@ form br {
     border-bottom: solid 2px lawngreen;
 }
 
-#label_reinput span {
+#label_id span, #label_reinput span {
     display: none;
     margin: 3px;
     padding: 2px;
 }
 
-#label_reinput span:first-child {
+#label_id span:first-child, #label_reinput span:first-child {
     background-color: red;
 }
 
-#label_reinput span:last-child {
+#label_id span:last-child, #label_reinput span:last-child {
     background-color: lawngreen;
 }

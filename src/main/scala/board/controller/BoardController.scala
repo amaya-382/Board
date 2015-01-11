@@ -34,41 +34,46 @@ object BoardController extends EasyEmit {
   private val boardBase = getStringFromResources("boardBase.html")
   private val buildWithBoardBase = builder.buildHtml(boardBase getOrElse "") _
 
-  private val head4sign = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
-                            |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
-                            |<script src="/js/board_signup.js" type="text/javascript"></script>
-                            |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
-                            |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
-                            |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-                            |<link href="/css/board.css" rel="stylesheet" type="text/css">
-                            |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
-                            | """.stripMargin
-
 
   def signUpPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Sing up"
+    val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+                      |<script src="/js/board_signup.js" type="text/javascript"></script>
+                      |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                      |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                      |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                      |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                      |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
+                      | """.stripMargin
 
     HttpResponse(req)(
       status = Ok,
       header = Map(contentType),
       body = buildWithBase(Seq(
         "title" -> title,
-        "head" -> head4sign,
+        "head" -> head,
         "body" -> (signUpBase getOrElse "")
       )))
   }
 
   def signInPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Login"
+    val title = "Sign in"
+    val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+                      |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                      |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                      |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                      |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                      |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
+                      | """.stripMargin
 
     HttpResponse(req)(
       status = Ok,
       header = Map(contentType),
       body = buildWithBase(Seq(
         "title" -> title,
-        "head" -> head4sign,
+        "head" -> head,
         "body" -> (signInBase getOrElse "")
       )))
   }
@@ -159,9 +164,9 @@ object BoardController extends EasyEmit {
       name <- req.body.get("name")
     } yield {
       //id, pwd に使えない文字が入っていた場合は再度signUpPageへ
-      if (!validate4Id(id))
+      if (!isValidId(id))
         signUpPage(req) //TODO:msg表示
-      else if (!validate4Pwd(pwd, repwd))
+      else if (!isValidPwd(pwd, repwd))
         signUpPage(req) //TODO:msg表示
       else {
         val salt = Security.hashBySHA384(id)
@@ -242,17 +247,24 @@ object BoardController extends EasyEmit {
     }
   }
 
+  def ajax_isValidId: Action = req => {
+    val contentType = "Content-Type" -> js.contentType
 
-  //TODO: ajax用に公開
-  private def validate4Id(id: String): Boolean = {
-    !isExistingUser(id)
+    HttpResponse(req)(
+      status = Ok,
+      header = Map(contentType),
+      body = if (isValidId(req.req._2.replaceFirst( """.+?\?""", ""))) "1" else ""
+    )
   }
 
-  private def validate4Pwd(pwd: String, reinput: String): Boolean = {
+  private def isValidId(id: String): Boolean = {
+    id != "" && !isExistingUser(id)
+  }
+
+  private def isValidPwd(pwd: String, reinput: String): Boolean = {
     pwd == reinput
   }
 
-  //TODO: ajax用に公開
   private def isExistingUser(id: String): Boolean = {
     getUsers exists (_.id == id)
   }

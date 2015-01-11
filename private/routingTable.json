@@ -11,6 +11,11 @@
     },
     {
         "method": "GET",
+        "regex":"^/board/isValidId/?",
+        "controller":"board.controller.BoardController.ajax_isValidId"
+    },
+    {
+        "method": "GET",
         "regex":"^/board/signup/?$",
         "controller":"board.controller.BoardController.signUpPage"
     },
