@@ -1,3 +1,9 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
 button {
     width: 250px;
     margin-top: 20px;
@@ -7,6 +13,7 @@ button {
     font-family: 'Oswald', sans-serif;
     font-size: larger;
     cursor: pointer;
+    outline: 0;
 }
 
 button:hover {
@@ -47,8 +54,6 @@ button:hover {
     border-top: 1px solid #311;
     height: 1px;
     text-align: center;
-
-    height: 1px;
     background: #311;
     background-image: -webkit-linear-gradient(left, #FFFFFF, #311, #FFFFFF);
     background-image: -moz-linear-gradient(left, #FFFFFF, #311, #FFFFFF);
@@ -69,3 +74,42 @@ button:hover {
     -moz-transform: rotate(-50deg);
     transform: rotate(-50deg);
 }
+
+.icon {
+    width: 20px;
+}
+
+#header {
+    width: 100%;
+    height: 50px;
+    background-color: #311;
+}
+
+#header_content {
+    float: left;
+}
+
+#login_user_name, #button_settings, #button_signout {
+    float: right;
+    height: 100%;
+}
+
+#login_user_name {
+    display: inline-block;
+    color: #FCC;
+    height: 30px;
+    margin: 10px 30px 0 0;
+}
+
+#header button {
+    width: 50px;
+}
+
+#button_settings {
+    margin: 0;
+}
+
+#button_signout {
+    margin: 0 40px 0 15px;
+}
+

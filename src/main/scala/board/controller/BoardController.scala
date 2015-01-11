@@ -28,6 +28,8 @@ object BoardController extends EasyEmit {
   //  private val buildWithLoginBase = builder.buildHtml(signInBase getOrElse "") _
   private val postBase = getStringFromResources("postBase.html")
   private val buildWithPostBase = builder.buildHtml(postBase getOrElse "") _
+  private val timeLineBase = getStringFromResources("timeLineBase.html")
+  private val buildWithTimeLineBase = builder.buildHtml(timeLineBase getOrElse "") _
   private val boardBase = getStringFromResources("boardBase.html")
   private val buildWithBoardBase = builder.buildHtml(boardBase getOrElse "") _
 
@@ -75,15 +77,20 @@ object BoardController extends EasyEmit {
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
                  |<script src="/js/script.js" type="text/javascript"></script>
-                 |<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
-                 |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
                  |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
                  |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-                 |<link href="/css/board.css" rel="stylesheet" type="text/css">""".stripMargin
+                 |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                 |<link href="/css/board_timeLine.css" rel="stylesheet" type="text/css">""".stripMargin
 
     val posts = getStringFromFile(path2PostData) match {
       case Some(json) => read[List[Post]](json)
       case None => throw new Exception("route file not found")
+    }
+
+    val userList = getUsers
+
+    val user = req.session flatMap {
+      s => userList find (_.id == s.id)
     }
 
     val formed =
@@ -91,7 +98,8 @@ object BoardController extends EasyEmit {
         .withFilter(_.enabled)
         .map(post => {
         buildWithPostBase(Seq(
-          "name" -> post.name,
+          "isOwn" -> (if (user.exists(_.id == post.id)) "own" else ""),
+          "name" -> userList.find(_.id == post.id).map(_.name).getOrElse("x"),
           "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
           "content" -> post.content
         ))
@@ -102,12 +110,13 @@ object BoardController extends EasyEmit {
       "Set-Cookie" -> s"SESSIONID=$sessionId; path=/board;"
     }
 
-    val user = req.session flatMap {
-      s => getUsers find (_.id == s.id)
-    }
-    val body = buildWithBoardBase(Seq(
-      "name" -> user.map(_.name).getOrElse(""),
+    val timeLine = buildWithTimeLineBase(Seq(
       "posts" -> formed.mkString
+    ))
+
+    val body = buildWithBoardBase(Seq(
+      "userName" -> user.map(_.name).getOrElse("x"),
+      "timeLine" -> timeLine
     ))
 
     HttpResponse(req)(
@@ -211,13 +220,12 @@ object BoardController extends EasyEmit {
         emitError(req)(BadRequest)
       case Some(u) =>
         val newPosts = {
-
           val date = Some(new java.util.Date())
           val content = req.body.getOrElse("content", "")
 
           posts :+ Post(
             true,
-            escape(u.name) getOrElse "",
+            escape(u.id) getOrElse "",
             date,
             escape(content) getOrElse "")
         }
