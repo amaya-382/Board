@@ -39,13 +39,13 @@ object BoardController extends EasyEmit {
     val contentType = "Content-Type" -> html.contentType
     val title = "Sing up"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
-                      |<script src="/js/board_signup.js" type="text/javascript"></script>
-                      |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
-                      |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
-                      |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-                      |<link href="/css/board.css" rel="stylesheet" type="text/css">
-                      |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
-                      | """.stripMargin
+                 |<script src="/js/board_signup.js" type="text/javascript"></script>
+                 |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                 |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                 |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
+                 | """.stripMargin
 
     HttpResponse(req)(
       status = Ok,
@@ -61,12 +61,12 @@ object BoardController extends EasyEmit {
     val contentType = "Content-Type" -> html.contentType
     val title = "Sign in"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
-                      |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
-                      |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
-                      |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-                      |<link href="/css/board.css" rel="stylesheet" type="text/css">
-                      |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
-                      | """.stripMargin
+                 |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                 |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                 |<link href="/css/board_sign.css" rel="stylesheet" type="text/css">
+                 | """.stripMargin
 
     HttpResponse(req)(
       status = Ok,
@@ -115,11 +115,12 @@ object BoardController extends EasyEmit {
 
     val cookieHeader = {
       val sessionId = req.session.map(_.sessionId).getOrElse("")
-      "Set-Cookie" -> s"SESSIONID=$sessionId; path=/board;"
+      "Set-Cookie" -> s"SESSIONID=$sessionId; path=/board; HttpOnly"
     }
 
     val timeLine = buildWithTimeLineBase(Seq(
-      "posts" -> formed.mkString
+      "posts" -> formed.mkString,
+      "token" -> hashBySHA384(req.session.map(_.sessionId) getOrElse "")
     ))
 
     val body = buildWithBoardBase(Seq(
@@ -224,6 +225,8 @@ object BoardController extends EasyEmit {
 
     val user = req.session.map(_.id).flatMap(id => getUsers find (_.id == id))
     user match {
+      case _ if !req.body.get("token").exists(req.session.map(_.sessionId).map(hashBySHA384).contains) =>
+        emitError(req)(BadRequest)
       case None =>
         emitError(req)(BadRequest)
       case Some(u) =>
