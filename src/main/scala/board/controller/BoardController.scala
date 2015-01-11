@@ -101,7 +101,7 @@ object BoardController extends EasyEmit {
           "isOwn" -> (if (user.exists(_.id == post.id)) "own" else ""),
           "name" -> userList.find(_.id == post.id).map(_.name).getOrElse("x"),
           "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
-          "content" -> post.content
+          "content" -> post.content.replaceAll("&lt;br&gt;", "<br>")
         ))
       })
 
@@ -222,6 +222,7 @@ object BoardController extends EasyEmit {
         val newPosts = {
           val date = Some(new java.util.Date())
           val content = req.body.getOrElse("content", "")
+            .replaceAll( """\r\n|\n""", "<br>")
 
           posts :+ Post(
             true,
