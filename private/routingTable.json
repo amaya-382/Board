@@ -36,8 +36,13 @@
     },
     {
         "method": "POST",
-        "regex": "^/board/post?$",
+        "regex": "^/board/post/?$",
         "controller": "board.controller.BoardController.post"
+    },
+    {
+        "method": "POST",
+        "regex": "^/board/delete/?$",
+        "controller": "board.controller.BoardController.delete"
     },
     {
         "method": "GET",

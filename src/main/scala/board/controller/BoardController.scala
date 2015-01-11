@@ -83,7 +83,7 @@ object BoardController extends EasyEmit {
     val title = "Board"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
-                 |<script src="/js/script.js" type="text/javascript"></script>
+                 |<script src="/js/board_timeLine.js" type="text/javascript"></script>
                  |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
                  |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
                  |<link href="/css/board.css" rel="stylesheet" type="text/css">
@@ -104,9 +104,12 @@ object BoardController extends EasyEmit {
       posts
         .withFilter(_.enabled)
         .map(post => {
+        val isOwn = user.exists(_.id == post.userId)
         buildWithPostBase(Seq(
-          "isOwn" -> (if (user.exists(_.id == post.id)) "own" else ""),
-          "name" -> userList.find(_.id == post.id).map(_.name).getOrElse("x"),
+          "isOwn" -> (if (isOwn) "own" else ""),
+          "display" -> (if (isOwn) "" else "none"),
+          "id" -> post.id,
+          "name" -> userList.find(_.id == post.userId).map(_.name).getOrElse("x"),
           "date" -> post.date.map(_.formatted("%tF %<tT")).mkString,
           "content" -> toXHTML(knockoff(
             post.content.replaceAll( """\\r\\n""", "\r\n"))).toString
@@ -231,14 +234,16 @@ object BoardController extends EasyEmit {
         emitError(req)(BadRequest)
       case Some(u) =>
         val newPosts = {
-          val date = Some(new java.util.Date())
+          val date = new java.util.Date()
+          val dateOpt = Some(date)
           val content = req.body.getOrElse("content", "")
             .replaceAll( """\r\n|\n""", """\\r\\n""")
 
           posts :+ Post(
             true,
+            hashBySHA384(u.id + date),
             u.id,
-            date,
+            dateOpt,
             escape(content) getOrElse "")
         }
 
@@ -247,6 +252,49 @@ object BoardController extends EasyEmit {
           pw.flush()
           signedIn(req)
         })(ex => emitError(req)(InternalServerError))
+    }
+  }
+
+  def delete: Action = req => {
+    val posts = getStringFromFile(path2PostData) match {
+      case Some(json) => read[List[Post]](json)
+      case None => throw new Exception("route file not found")
+    }
+
+    val user = req.session.map(_.id).flatMap(id => getUsers find (_.id == id))
+    user match {
+      case _ if !req.body.get("token").exists(req.session.map(_.sessionId).map(hashBySHA384).contains) =>
+        emitError(req)(BadRequest)
+      case None =>
+        emitError(req)(BadRequest)
+      case Some(u) =>
+        req.body.get("id") match {
+          case Some(id) =>
+            var deleted = false
+            val newPosts = posts.map(post =>
+              if (id == post.id && u.id == post.userId) {
+                deleted = true
+                post.copy(enabled = false)
+              }
+              else
+                post
+            )
+
+            if (deleted)
+              writeWithResult(path2PostData)(pw => {
+                pw.print(write(newPosts))
+                pw.flush()
+                HttpResponse(req)(
+                  status = Ok,
+                  header = Map("Content-Type" -> txt.contentType),
+                  body = id
+                )
+              })(ex => emitError(req)(InternalServerError))
+            else
+              emitError(req)(BadRequest)
+          case None =>
+            emitError(req)(InternalServerError)
+        }
     }
   }
 
