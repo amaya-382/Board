@@ -41,7 +41,16 @@
 .content {
     width: 80%;
     margin: 0;
-    padding: 20px;
+    padding: 20px 50px;
+}
+
+.as_border {
+    height: 10px;
+    width: 90%;
+    border-bottom: dotted 5px #F9DFD5;
+    border-right: solid 10px #007FB1;
+    border-left: solid 10px #007FB1;
+    margin: 0 auto;
 }
 
 .name {
