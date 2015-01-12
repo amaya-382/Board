@@ -6,11 +6,11 @@ import org.json4s._
 import org.json4s.native.Serialization.{read, write}
 import com.tristanhunt.knockoff.DefaultDiscounter._
 
-import simplehttpserver.impl._
-import simplehttpserver.util.{Security, EasyEmit}
-import simplehttpserver.util.implicits.Implicit._
-import simplehttpserver.util.Security._
-import simplehttpserver.util.Common._
+import simplehttpframework.impl._
+import simplehttpframework.util.{Security, EasyEmit}
+import simplehttpframework.util.implicits.Implicit._
+import simplehttpframework.util.Security._
+import simplehttpframework.util.Common._
 
 import scala.util.Random
 

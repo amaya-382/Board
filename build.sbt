@@ -14,6 +14,6 @@ libraryDependencies ++= Seq(
   "com.tristanhunt" %% "knockoff" % "0.8.3"
 )
 
-lazy val root = project.in(file(".")).dependsOn(simpleHttpServer)
+lazy val root = project.in(file(".")).dependsOn(simpleHttpFramework)
 
-lazy val simpleHttpServer = uri("git://github.com/amaya-382/SimpleHttpServer.git")
+lazy val simpleHttpFramework = uri("git://github.com/amaya-382/SimpleHttpFramework.git")

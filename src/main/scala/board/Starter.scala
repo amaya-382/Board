@@ -1,6 +1,6 @@
 package board
 
-import simplehttpserver.HttpServer
+import simplehttpframework.HttpServer
 
 object Starter {
   def main(args: Array[String]) {

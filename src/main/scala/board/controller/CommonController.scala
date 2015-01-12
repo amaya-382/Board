@@ -2,9 +2,9 @@ package board.controller
 
 import java.io.File
 
-import simplehttpserver.impl._
-import simplehttpserver.util.EasyEmit
-import simplehttpserver.util.implicits.Implicit._
+import simplehttpframework.impl._
+import simplehttpframework.util.EasyEmit
+import simplehttpframework.util.implicits.Implicit._
 
 
 object CommonController extends EasyEmit {
