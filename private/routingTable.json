@@ -35,6 +35,16 @@
         "controller":"board.controller.BoardController.signOut"
     },
     {
+        "method": "GET",
+        "pattern":"^/board/settings/?$",
+        "controller":"board.controller.BoardController.settingsPageSorter"
+    },
+    {
+        "method": "POST",
+        "pattern":"^/board/changeSettings/?$",
+        "controller":"board.controller.BoardController.changeSettings"
+    },
+    {
         "method": "POST",
         "pattern": "^/board/post/?$",
         "controller": "board.controller.BoardController.post"

@@ -1,12 +1,12 @@
 <div id="header">
     <div id="header_content"></div>
 
-    <button id="button_signout" onclick="location.href='/board/signout'">
+    <button id="button_signout" onclick="location.href='/board/signout';">
         <img src="/svg/account-logout.svg" alt="Sign out" class="icon"/>
     </button>
-    <button id="button_settings">
+    <button id="button_settings" onclick="location.href='/board/settings';">
         <img src="/svg/cog.svg" alt="Settings" class="icon"/>
     </button>
-    <p id="login_user_name">@userName</p>
+    <p id="login_user_name" data-token="@token">@userName</p>
 </div>
 @timeLine

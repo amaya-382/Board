@@ -18,7 +18,7 @@ $(function () {
         }, 100);
     }
 
-    var token = $("#token").val();
+    var token = $("#login_user_name").data("token");
     var deleteEvent = function () {
         if (!window.confirm("この投稿を削除します. よろしいですか？"))
             return;

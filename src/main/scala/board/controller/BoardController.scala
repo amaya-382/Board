@@ -3,6 +3,8 @@ package board.controller
 import board.entity._
 
 import org.json4s._
+import org.json4s.JsonDSL._
+import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.{read, write}
 import com.tristanhunt.knockoff.DefaultDiscounter._
 
@@ -35,6 +37,8 @@ object BoardController extends EasyEmit {
   private val buildWithTimeLineBase = builder.buildHtml(timeLineBase getOrElse "") _
   private val boardBase = getStringFromResources("boardBase.html")
   private val buildWithBoardBase = builder.buildHtml(boardBase getOrElse "") _
+  private val settingsBase = getStringFromResources("settingsBase.html")
+  private val buildWithSettingsBase = builder.buildHtml(settingsBase getOrElse "") _
 
 
   def signUpPage: Action = req => {
@@ -121,11 +125,11 @@ object BoardController extends EasyEmit {
     }
 
     val timeLine = buildWithTimeLineBase(Seq(
-      "posts" -> formed.mkString,
-      "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse "")
+      "posts" -> formed.mkString
     ))
 
     val body = buildWithBoardBase(Seq(
+      "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse ""),
       "userName" -> user.map(_.name).getOrElse("x"),
       "timeLine" -> timeLine
     ))
@@ -133,6 +137,39 @@ object BoardController extends EasyEmit {
     HttpResponse(req)(
       Ok,
       header = Map(contentType, cookieHeader),
+      body = buildWithBase(Seq(
+        "title" -> title,
+        "head" -> head,
+        "body" -> body))
+    )
+  }
+
+  def settingsPage: Action = req => {
+    val contentType = "Content-Type" -> html.contentType
+    val title = "Board"
+    val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+                 |<script src="/js/board_settings.js" type="text/javascript"></script>
+                 |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                 |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                 |<link href="/css/board_settings.css" rel="stylesheet" type="text/css">""".stripMargin
+
+    val userName = req.session flatMap {
+      s => getUsers find (_.id == s.id)
+    } map (_.name) getOrElse ""
+
+    val body =
+      buildWithBoardBase(Seq(
+        "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse ""),
+        "userName" -> userName,
+        "timeLine" -> buildWithSettingsBase(Seq(
+          "name" -> userName
+        ))
+      ))
+
+    HttpResponse(req)(
+      status = Ok,
+      header = Map(contentType),
       body = buildWithBase(Seq(
         "title" -> title,
         "head" -> head,
@@ -156,6 +193,15 @@ object BoardController extends EasyEmit {
       status = MovedPermanently,
       header = Map(locationHeader),
       body = "")
+  }
+
+  def settingsPageSorter: Action = req => {
+    req.session match {
+      case Some(s) if s.isVaild =>
+        settingsPage(req)
+      case _ =>
+        signInPage(req)
+    }
   }
 
 
@@ -308,6 +354,34 @@ object BoardController extends EasyEmit {
               emitError(req)(BadRequest)
           case None =>
             emitError(req)(InternalServerError)
+        }
+    }
+  }
+
+  def changeSettings: Action = req => {
+    val userList = getUsers
+    val user = req.session.map(_.id).flatMap(id => userList find (_.id == id))
+    user match {
+      case _ if !req.body.get("token").exists(req.session.map(_.sessionId).map(hashBySHA384).contains) =>
+        emitError(req)(BadRequest)
+      case None =>
+        emitError(req)(BadRequest)
+      case Some(u) =>
+        req.body.get("name") match {
+          case Some(name) =>
+            val newUserList = userList.filter(_.id != u.id) :+ u.copy(name = name)
+
+            writeWithResult(path2UserData)(pw => {
+              pw.print(write(newUserList))
+              pw.flush()
+              HttpResponse(req)(
+                status = Ok,
+                header = Map("Content-Type" -> txt.contentType),
+                body = compact(render("name" -> name))
+              )
+            })(ex => emitError(req)(InternalServerError))
+          case None =>
+            emitError(req)(BadRequest)
         }
     }
   }
