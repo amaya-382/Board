@@ -1,62 +1,62 @@
 [
     {
         "method": "GET",
-        "regex": "^/?$",
+        "pattern": "^/?$",
         "controller": "board.controller.CommonController.root"
     },
     {
         "method": "GET",
-        "regex": "^/echo/?$",
+        "pattern": "^/echo/?$",
         "controller": "board.controller.CommonController.echo"
     },
     {
         "method": "GET",
-        "regex":"^/board/isValidId/?",
+        "pattern":"^/board/isValidId/?",
         "controller":"board.controller.BoardController.ajax_isValidId"
     },
     {
         "method": "GET",
-        "regex":"^/board/signup/?$",
+        "pattern":"^/board/signup/?$",
         "controller":"board.controller.BoardController.signUpPage"
     },
     {
         "method": "POST",
-        "regex":"^/board/signup/?$",
+        "pattern":"^/board/signup/?$",
         "controller":"board.controller.BoardController.signUp"
     },
     {
         "method": "POST",
-        "regex":"^/board/signin/?$",
+        "pattern":"^/board/signin/?$",
         "controller":"board.controller.BoardController.signIn"
     },
     {
         "method": "GET",
-        "regex":"^/board/signout/?$",
+        "pattern":"^/board/signout/?$",
         "controller":"board.controller.BoardController.signOut"
     },
     {
         "method": "POST",
-        "regex": "^/board/post/?$",
+        "pattern": "^/board/post/?$",
         "controller": "board.controller.BoardController.post"
     },
     {
         "method": "POST",
-        "regex": "^/board/delete/?$",
+        "pattern": "^/board/delete/?$",
         "controller": "board.controller.BoardController.delete"
     },
     {
         "method": "GET",
-        "regex": "^/board/?$",
+        "pattern": "^/board/?$",
         "controller": "board.controller.BoardController.boardPage"
     },
     {
         "method": "GET",
-        "regex": "^/board/.+$",
+        "pattern": "^/board/.+$",
         "controller": "board.controller.BoardController.redirect2Board"
     },
     {
         "method": "GET",
-        "regex": "^/.+$",
+        "pattern": "^/.+$",
         "controller": "board.controller.CommonController.asset"
     }
 ]
