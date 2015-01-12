@@ -20,6 +20,8 @@ $(function () {
 
     var token = $("#token").val();
     var deleteEvent = function () {
+        if (!window.confirm("この投稿を削除します. よろしいですか？"))
+            return;
         $.post(
             "/board/delete",
             { "id": $(this).parent().attr("id"), "token": token},
