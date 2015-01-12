@@ -47,7 +47,7 @@
     {
         "method": "GET",
         "pattern": "^/board/?$",
-        "controller": "board.controller.BoardController.boardPage"
+        "controller": "board.controller.BoardController.boardPageSorter"
     },
     {
         "method": "GET",

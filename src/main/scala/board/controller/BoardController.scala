@@ -80,7 +80,7 @@ object BoardController extends EasyEmit {
       )))
   }
 
-  def signedIn: Action = req => {
+  def boardPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
     val title = "Board"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
@@ -140,10 +140,10 @@ object BoardController extends EasyEmit {
     )
   }
 
-  def boardPage: Action = req => {
+  def boardPageSorter: Action = req => {
     req.session match {
       case Some(s) if s.isVaild =>
-        signedIn(req)
+        boardPage(req)
       case _ =>
         signInPage(req)
     }
@@ -181,7 +181,7 @@ object BoardController extends EasyEmit {
           pw.print(write(newUsers))
           req.refreshSession(false)
           pw.flush()
-          boardPage(req)
+          boardPageSorter(req)
         })(ex => {
           emitError(req)(InternalServerError)
         })
@@ -202,7 +202,7 @@ object BoardController extends EasyEmit {
       users.find(user => user.id == id && user.hashedPwd == hashedPwd) match {
         case Some(user) =>
           req.refreshSession(false)
-          signedIn(req)
+          boardPage(req)
         case None =>
           signInPage(req)
       }
@@ -264,7 +264,7 @@ object BoardController extends EasyEmit {
                 "content" -> toXHTML(knockoff(
                   content.replaceAll( """\\r\\n""", "\r\n"))).toString)))
           else
-            signedIn(req)
+            boardPage(req)
         })(ex => emitError(req)(InternalServerError))
     }
   }
