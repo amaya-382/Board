@@ -3,8 +3,8 @@ $(function () {
     var $textarea = $("textarea");
     var $post_form = $("#post_form");
     $textarea.focusin(function () {
-        $container.css("height", "calc(100% - 150px)");
-        $post_form.css("height", "100px");
+        $container.css("height", "calc(100% - 200px)");
+        $post_form.css("height", "150px");
     });
     $textarea.focusout(function () {
         $container.css("height", "calc(100% - 90px)");
