@@ -233,15 +233,16 @@ object BoardController extends EasyEmit {
       case None =>
         emitError(req)(BadRequest)
       case Some(u) =>
+        val date = new java.util.Date()
+        val postId = hashBySHA384(u.id + date)
+        val content = req.body.getOrElse("content", "")
+          .replaceAll( """\r\n|\n""", """\\r\\n""")
         val newPosts = {
-          val date = new java.util.Date()
           val dateOpt = Some(date)
-          val content = req.body.getOrElse("content", "")
-            .replaceAll( """\r\n|\n""", """\\r\\n""")
 
           posts :+ Post(
             true,
-            hashBySHA384(u.id + date),
+            postId,
             u.id,
             dateOpt,
             escape(content) getOrElse "")
@@ -250,7 +251,21 @@ object BoardController extends EasyEmit {
         writeWithResult(path2PostData)(pw => {
           pw.print(write(newPosts))
           pw.flush()
-          signedIn(req)
+
+          if (req.header.get("X-Requested-With").contains("XMLHttpRequest"))
+            HttpResponse(req)(
+              status = Ok,
+              header = Map(),
+              body = buildWithPostBase(Seq(
+                "isOwn" -> "own",
+                "display" -> "",
+                "id" -> postId,
+                "name" -> u.name,
+                "date" -> date.formatted("%tF %<tT").mkString,
+                "content" -> toXHTML(knockoff(
+                  content.replaceAll( """\\r\\n""", "\r\n"))).toString)))
+          else
+            signedIn(req)
         })(ex => emitError(req)(InternalServerError))
     }
   }
