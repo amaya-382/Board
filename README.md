@@ -5,7 +5,7 @@ An illustration of Simple Http Framework
 
 ## Usage
 ```
-java -jar board-1.0.0.jar
+java -jar board-1.1.0.jar
 ```
 
 ## Acknowledgement

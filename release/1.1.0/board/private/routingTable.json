@@ -1,0 +1,72 @@
+[
+    {
+        "method": "GET",
+        "pattern": "^/?$",
+        "controller": "board.controller.CommonController.root"
+    },
+    {
+        "method": "GET",
+        "pattern": "^/echo/?$",
+        "controller": "board.controller.CommonController.echo"
+    },
+    {
+        "method": "GET",
+        "pattern":"^/board/isValidId/?",
+        "controller":"board.controller.BoardController.ajax_isValidId"
+    },
+    {
+        "method": "GET",
+        "pattern":"^/board/signup/?$",
+        "controller":"board.controller.BoardController.signUpPage"
+    },
+    {
+        "method": "POST",
+        "pattern":"^/board/signup/?$",
+        "controller":"board.controller.BoardController.signUp"
+    },
+    {
+        "method": "POST",
+        "pattern":"^/board/signin/?$",
+        "controller":"board.controller.BoardController.signIn"
+    },
+    {
+        "method": "GET",
+        "pattern":"^/board/signout/?$",
+        "controller":"board.controller.BoardController.signOut"
+    },
+    {
+        "method": "GET",
+        "pattern":"^/board/settings/?$",
+        "controller":"board.controller.BoardController.settingsPageSorter"
+    },
+    {
+        "method": "POST",
+        "pattern":"^/board/changeSettings/?$",
+        "controller":"board.controller.BoardController.changeSettings"
+    },
+    {
+        "method": "POST",
+        "pattern": "^/board/post/?$",
+        "controller": "board.controller.BoardController.post"
+    },
+    {
+        "method": "POST",
+        "pattern": "^/board/delete/?$",
+        "controller": "board.controller.BoardController.delete"
+    },
+    {
+        "method": "GET",
+        "pattern": "^/board/?$",
+        "controller": "board.controller.BoardController.boardPageSorter"
+    },
+    {
+        "method": "GET",
+        "pattern": "^/board/.+$",
+        "controller": "board.controller.BoardController.redirect2Board"
+    },
+    {
+        "method": "GET",
+        "pattern": "^/.+$",
+        "controller": "board.controller.CommonController.asset"
+    }
+]
