@@ -13,7 +13,8 @@ body {
     font-family: 'Rock Salt', cursive;
     font-size: 11em;
     text-align: center;
-    margin: 120px 20px -50px 20px;
+    margin: 0;
+    padding-top: 50px;
     color: #311;
     max-width: 100%;
 }
@@ -57,6 +58,11 @@ label {
     margin-right: 30px;
 }
 
+input {
+    width: 120px;
+    text-align: center;
+}
+
 .sign p {
     width: 250px;
     padding: 10px;
@@ -64,14 +70,7 @@ label {
     margin-bottom: 20px;
 }
 
-#button_tosignup {
-    width: 132px;
-    height: 50px;
-    padding: 10px;
-    margin-bottom: 30px;
-}
-
-#button_tosignin {
+#button_tosignup, #button_tosignin {
     width: 132px;
     height: 50px;
     padding: 10px;
@@ -82,39 +81,8 @@ label {
     margin-top: 0;
 }
 
-#button_go {
-    /*margin-top: 5px;*/
-}
-
 form br {
     clear: left;
-}
-
-.underline {
-    outline: 0;
-    border: none;
-    border-bottom: solid 1px #311;
-    background: transparent;
-    text-align: center;
-}
-
-.underline:hover, .underline:hover {
-    -webkit-transition: all 200ms linear;
-    -moz-transition: all 200ms linear;
-    -ms-transition: all 200ms linear;
-    -o-transition: all 200ms linear;
-    transition: all 200ms linear;
-    border: solid 2px coral;
-}
-
-.underline_red {
-    border: none;
-    border-bottom: solid 2px red;
-}
-
-.underline_green {
-    border: none;
-    border-bottom: solid 2px lawngreen;
 }
 
 #label_id span, #label_reinput span {

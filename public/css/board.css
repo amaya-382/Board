@@ -49,6 +49,32 @@ button:hover {
     font-size: inherit;
 }
 
+.underline {
+    outline: 0;
+    border: none;
+    border-bottom: solid 1px #311;
+    background: transparent;
+}
+
+.underline:hover, .underline:hover {
+    -webkit-transition: all 200ms linear;
+    -moz-transition: all 200ms linear;
+    -ms-transition: all 200ms linear;
+    -o-transition: all 200ms linear;
+    transition: all 200ms linear;
+    border: solid 2px coral;
+}
+
+.underline_red {
+    border: none;
+    border-bottom: solid 2px red;
+}
+
+.underline_green {
+    border: none;
+    border-bottom: solid 2px lawngreen;
+}
+
 .separator {
     border: none;
     border-top: 1px solid #311;
@@ -85,8 +111,19 @@ button:hover {
     background-color: #311;
 }
 
-#header_content {
+#top {
     float: left;
+    height: 100%;
+    margin: 0 0 0 40px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+#top p {
+    font-family: 'Rock Salt', cursive;
+    margin: 0;
+    color: #311;
 }
 
 #login_user_name, #button_settings, #button_signout {

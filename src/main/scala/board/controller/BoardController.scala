@@ -3,6 +3,8 @@ package board.controller
 import board.entity._
 
 import org.json4s._
+import org.json4s.JsonDSL._
+import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.{read, write}
 import com.tristanhunt.knockoff.DefaultDiscounter._
 
@@ -35,11 +37,13 @@ object BoardController extends EasyEmit {
   private val buildWithTimeLineBase = builder.buildHtml(timeLineBase getOrElse "") _
   private val boardBase = getStringFromResources("boardBase.html")
   private val buildWithBoardBase = builder.buildHtml(boardBase getOrElse "") _
+  private val settingsBase = getStringFromResources("settingsBase.html")
+  private val buildWithSettingsBase = builder.buildHtml(settingsBase getOrElse "") _
 
 
   def signUpPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Sing up"
+    val title = "Board - Sing up"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/board_signup.js" type="text/javascript"></script>
                  |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
@@ -61,7 +65,7 @@ object BoardController extends EasyEmit {
 
   def signInPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Sign in"
+    val title = "Board - Sign in"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
                  |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
@@ -80,11 +84,12 @@ object BoardController extends EasyEmit {
       )))
   }
 
-  def signedIn: Action = req => {
+  def boardPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Board"
+    val title = "Board - TimeLine"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/board_timeLine.js" type="text/javascript"></script>
+                 |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
                  |<link href="/css/board.css" rel="stylesheet" type="text/css">
                  |<link href="/css/board_timeLine.css" rel="stylesheet" type="text/css">""".stripMargin
 
@@ -121,11 +126,11 @@ object BoardController extends EasyEmit {
     }
 
     val timeLine = buildWithTimeLineBase(Seq(
-      "posts" -> formed.mkString,
-      "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse "")
+      "posts" -> formed.mkString
     ))
 
     val body = buildWithBoardBase(Seq(
+      "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse ""),
       "userName" -> user.map(_.name).getOrElse("x"),
       "timeLine" -> timeLine
     ))
@@ -140,10 +145,44 @@ object BoardController extends EasyEmit {
     )
   }
 
-  def boardPage: Action = req => {
+  def settingsPage: Action = req => {
+    val contentType = "Content-Type" -> html.contentType
+    val title = "Board - Settings"
+    val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+                 |<script src="/js/board_settings.js" type="text/javascript"></script>
+                 |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+                 |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+                 |<link href="/css/board.css" rel="stylesheet" type="text/css">
+                 |<link href="/css/board_settings.css" rel="stylesheet" type="text/css">""".stripMargin
+
+    val userName = req.session flatMap {
+      s => getUsers find (_.id == s.id)
+    } map (_.name) getOrElse ""
+
+    val body =
+      buildWithBoardBase(Seq(
+        "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse ""),
+        "userName" -> userName,
+        "timeLine" -> buildWithSettingsBase(Seq(
+          "name" -> userName
+        ))
+      ))
+
+    HttpResponse(req)(
+      status = Ok,
+      header = Map(contentType),
+      body = buildWithBase(Seq(
+        "title" -> title,
+        "head" -> head,
+        "body" -> body))
+    )
+  }
+
+  def boardPageSorter: Action = req => {
     req.session match {
       case Some(s) if s.isVaild =>
-        signedIn(req)
+        boardPage(req)
       case _ =>
         signInPage(req)
     }
@@ -156,6 +195,15 @@ object BoardController extends EasyEmit {
       status = MovedPermanently,
       header = Map(locationHeader),
       body = "")
+  }
+
+  def settingsPageSorter: Action = req => {
+    req.session match {
+      case Some(s) if s.isVaild =>
+        settingsPage(req)
+      case _ =>
+        signInPage(req)
+    }
   }
 
 
@@ -181,7 +229,7 @@ object BoardController extends EasyEmit {
           pw.print(write(newUsers))
           req.refreshSession(false)
           pw.flush()
-          boardPage(req)
+          boardPageSorter(req)
         })(ex => {
           emitError(req)(InternalServerError)
         })
@@ -202,7 +250,7 @@ object BoardController extends EasyEmit {
       users.find(user => user.id == id && user.hashedPwd == hashedPwd) match {
         case Some(user) =>
           req.refreshSession(false)
-          signedIn(req)
+          boardPage(req)
         case None =>
           signInPage(req)
       }
@@ -264,7 +312,7 @@ object BoardController extends EasyEmit {
                 "content" -> toXHTML(knockoff(
                   content.replaceAll( """\\r\\n""", "\r\n"))).toString)))
           else
-            signedIn(req)
+            boardPage(req)
         })(ex => emitError(req)(InternalServerError))
     }
   }
@@ -308,6 +356,34 @@ object BoardController extends EasyEmit {
               emitError(req)(BadRequest)
           case None =>
             emitError(req)(InternalServerError)
+        }
+    }
+  }
+
+  def changeSettings: Action = req => {
+    val userList = getUsers
+    val user = req.session.map(_.id).flatMap(id => userList find (_.id == id))
+    user match {
+      case _ if !req.body.get("token").exists(req.session.map(_.sessionId).map(hashBySHA384).contains) =>
+        emitError(req)(BadRequest)
+      case None =>
+        emitError(req)(BadRequest)
+      case Some(u) =>
+        req.body.get("name") match {
+          case Some(name) =>
+            val newUserList = userList.filter(_.id != u.id) :+ u.copy(name = name)
+
+            writeWithResult(path2UserData)(pw => {
+              pw.print(write(newUserList))
+              pw.flush()
+              HttpResponse(req)(
+                status = Ok,
+                header = Map("Content-Type" -> txt.contentType),
+                body = compact(render("name" -> name))
+              )
+            })(ex => emitError(req)(InternalServerError))
+          case None =>
+            emitError(req)(BadRequest)
         }
     }
   }
