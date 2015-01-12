@@ -16,6 +16,8 @@
 }
 
 .post {
+    width: 100%;
+    box-sizing: border-box;
     border-left: solid 10px coral;
     padding: 0 10px 0 0;
     margin: 10px auto;
@@ -47,12 +49,14 @@
 }
 
 .delete {
+    opacity: 0.5;
     width: 20px;
     height: 20px;
     font-size: 20px;
     float: right;
     margin: 10px 5px 0 0;
     cursor: pointer;
+    color: black;
 }
 
 .delete:hover {
@@ -61,6 +65,7 @@
     -ms-transition: all 200ms linear;
     -o-transition: all 200ms linear;
     transition: all 200ms linear;
+    opacity: 1;
     color: red;
 }
 

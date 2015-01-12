@@ -26,23 +26,26 @@ $(function () {
             "/board/delete",
             { "id": $(this).parent().attr("id"), "token": token},
             function (res) {
-                $("#" + res).remove();
+                var target = $("#" + res);
+                target.animate({"height": 0, "opacity": 0}, 1500, function () {
+                    target.remove();
+                });
             });
     };
     $(".delete").click(deleteEvent);
 
     $("#button_post").click(function () {
-        console.log("clicked");
         $.post(
             "/board/post",
             {"content": $textarea.val(), "token": token},
             function (res) {
-                var $post = $(res);
+                var $post = $(res).css({"width": 0, "opacity": 0});
                 $post.children(".delete").click(deleteEvent);
-                $("#time_line").append($post);
                 $textarea.val("");
                 restore();
                 scrollToBottom();
+                $("#time_line").append($post);
+                $post.animate({"width": "100%", "opacity": 1}, 1500);
             });
         return false;
     });
