@@ -321,7 +321,7 @@ object BoardController extends EasyEmit {
     HttpResponse(req)(
       status = Ok,
       header = Map(contentType),
-      body = if (isValidId(req.req._2.replaceFirst( """.+?\?""", ""))) "1" else ""
+      body = if (isValidId(req.req._2.replaceFirst( """.+\/\?|.+""", ""))) "1" else ""
     )
   }
 
