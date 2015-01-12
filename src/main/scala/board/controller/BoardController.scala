@@ -84,10 +84,7 @@ object BoardController extends EasyEmit {
     val contentType = "Content-Type" -> html.contentType
     val title = "Board"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
-                 |<script src="/js/jquery.pjax.min.js" type="text/javascript"></script>
                  |<script src="/js/board_timeLine.js" type="text/javascript"></script>
-                 |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
-                 |<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
                  |<link href="/css/board.css" rel="stylesheet" type="text/css">
                  |<link href="/css/board_timeLine.css" rel="stylesheet" type="text/css">""".stripMargin
 
