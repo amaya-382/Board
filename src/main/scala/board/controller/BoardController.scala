@@ -12,6 +12,8 @@ import simplehttpserver.util.implicits.Implicit._
 import simplehttpserver.util.Security._
 import simplehttpserver.util.Common._
 
+import scala.util.Random
+
 
 object BoardController extends EasyEmit {
   type Action = HttpRequest => HttpResponse
@@ -123,7 +125,7 @@ object BoardController extends EasyEmit {
 
     val timeLine = buildWithTimeLineBase(Seq(
       "posts" -> formed.mkString,
-      "token" -> hashBySHA384(req.session.map(_.sessionId) getOrElse "")
+      "token" -> (req.session.map(_.sessionId).map(hashBySHA384) getOrElse "")
     ))
 
     val body = buildWithBoardBase(Seq(
@@ -234,7 +236,7 @@ object BoardController extends EasyEmit {
         emitError(req)(BadRequest)
       case Some(u) =>
         val date = new java.util.Date()
-        val postId = hashBySHA384(u.id + date)
+        val postId = hashBySHA384(u.id + date + Random.alphanumeric.take(5).mkString)
         val content = req.body.getOrElse("content", "")
           .replaceAll( """\r\n|\n""", """\\r\\n""")
         val newPosts = {
