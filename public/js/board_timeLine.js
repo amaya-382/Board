@@ -1,4 +1,16 @@
 $(function () {
+    var $container = $("#container");
+    var $textarea = $("textarea");
+    var $post_form = $("#post_form");
+    $textarea.focusin(function () {
+        $container.css("height", "calc(100% - 150px)");
+        $post_form.css("height", "100px");
+    });
+    $textarea.focusout(function () {
+        $container.css("height", "calc(100% - 90px)");
+        $post_form.css("height", "40px");
+    });
+
     $(".delete").click(function () {
         $.post(
             "/board/delete",
@@ -8,8 +20,7 @@ $(function () {
             });
     });
 
-    var $time_line = $("#content");
     setTimeout(function () {
-        $time_line.scrollTop($time_line[0].scrollHeight);
+        $container.scrollTop($container[0].scrollHeight);
     }, 100);
 });
