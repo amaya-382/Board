@@ -111,8 +111,19 @@ button:hover {
     background-color: #311;
 }
 
-#header_content {
+#top {
     float: left;
+    height: 100%;
+    margin: 0 0 0 40px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+#top p {
+    font-family: 'Rock Salt', cursive;
+    margin: 0;
+    color: #311;
 }
 
 #login_user_name, #button_settings, #button_signout {
