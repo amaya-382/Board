@@ -43,7 +43,7 @@ object BoardController extends EasyEmit {
 
   def signUpPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Sing up"
+    val title = "Board - Sing up"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/board_signup.js" type="text/javascript"></script>
                  |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
@@ -65,7 +65,7 @@ object BoardController extends EasyEmit {
 
   def signInPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Sign in"
+    val title = "Board - Sign in"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<link href='http://fonts.googleapis.com/css?family=Rock+Salt' rel='stylesheet' type='text/css'>
                  |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
@@ -86,7 +86,7 @@ object BoardController extends EasyEmit {
 
   def boardPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Board"
+    val title = "Board - TimeLine"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/board_timeLine.js" type="text/javascript"></script>
                  |<link href="/css/board.css" rel="stylesheet" type="text/css">
@@ -146,7 +146,7 @@ object BoardController extends EasyEmit {
 
   def settingsPage: Action = req => {
     val contentType = "Content-Type" -> html.contentType
-    val title = "Board"
+    val title = "Board - Settings"
     val head = """<script src="/js/jquery-1.11.2.min.js" type="text/javascript"></script>
                  |<script src="/js/board_settings.js" type="text/javascript"></script>
                  |<link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
